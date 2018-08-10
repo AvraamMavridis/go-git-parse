@@ -1,0 +1,1 @@
+go build -o git-parse -i src/git-parse.go

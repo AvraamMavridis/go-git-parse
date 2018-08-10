@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 )
 
-// Commit :
+// Commit : Map of strings
 type Commit map[string]string
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 	}
 
 	commits := strings.Split(string(out), "\n")
-	commitsArray := make([]string, len(commits)-1)
+	commitsArray := make([]Commit, len(commits)-1)
 
 	for i, commit := range commits {
 		var commitInfo = strings.Split(string(commit), " ")
@@ -34,15 +35,13 @@ func main() {
 				"commitHash":  commitHash,
 			}
 
-			data, err := json.Marshal(commitStructure)
-			if err != nil {
-				panic(err)
-			}
-			commitsArray[i] = string(data)
+			commitsArray[i] = commitStructure
 		}
 
+		file, _ := os.Create("git.json")
 		commitJSON, _ := json.Marshal(commitsArray)
+		defer file.Close()
 
-		fmt.Printf(string(commitJSON))
+		fmt.Fprintf(file, string(commitJSON))
 	}
 }
