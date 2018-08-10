@@ -1,5 +1,15 @@
-package main 
+package main
+
+import (
+	"fmt"
+	"os/exec"
+)
 
 func main() {
-    // Execution of CLI tool behavior goes here 
+	out, err := exec.Command("git", "log").Output()
+	if err != nil {
+		fmt.Println("error occured")
+		fmt.Printf("%s", err)
+	}
+	fmt.Printf(string(out))
 }
